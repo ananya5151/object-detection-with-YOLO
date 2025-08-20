@@ -489,9 +489,23 @@ async def main():
     # Initialize server
     server = WebRTCServer(detector)
 
-    # Start WebSocket server
+    # Simple HTTP health check handler
+    async def health_check_handler(websocket, path):
+        if path == "/health":
+            health_response = {
+                "status": "healthy",
+                "timestamp": time.time(),
+                "model_loaded": detector is not None,
+                "version": "1.0.0",
+            }
+            await websocket.send(json.dumps(health_response))
+            return
+        else:
+            await server.handle_websocket(websocket, path)
+
+    # Start WebSocket server with health check
     logger.info(f"Starting WebRTC server on {args.host}:{args.port}")
-    async with serve(server.handle_websocket, args.host, args.port):
+    async with serve(health_check_handler, args.host, args.port):
         await asyncio.Future()  # Run forever
 
 

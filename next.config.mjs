@@ -10,7 +10,7 @@ const nextConfig = {
     unoptimized: true,
   },
   output: 'standalone',
-  
+
   async headers() {
     return [
       {
@@ -54,18 +54,26 @@ const nextConfig = {
       },
     ]
   },
-  
+
   experimental: {
     serverComponentsExternalPackages: ['socket.io'],
   },
-  
+
   webpack: (config, { dev, isServer }) => {
     // Handle WASM files properly
     config.experiments = {
       asyncWebAssembly: true,
       layers: true,
     };
-    
+
+    // ONNX Runtime specific configuration
+    config.externals = config.externals || [];
+    if (!isServer) {
+      config.externals.push({
+        'onnxruntime-node': 'onnxruntime-node',
+      });
+    }
+
     // Ignore server-only modules in client bundle
     if (!isServer) {
       config.resolve.fallback = {
@@ -74,8 +82,15 @@ const nextConfig = {
         net: false,
         tls: false,
         child_process: false,
+        'onnxruntime-node': false,
       };
     }
+
+    // Handle ONNX files
+    config.module.rules.push({
+      test: /\.onnx$/,
+      type: 'asset/resource',
+    });
 
     return config;
   },
