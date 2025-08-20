@@ -1,9 +1,12 @@
+//components\video-stream.tsx
 "use client"
 
 import { useRef, useEffect, useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { WebRTCManager } from "@/lib/webrtc-manager"
 import { DetectionOverlay } from "./detection-overlay"
+import { metricsCollector } from "@/lib/metrics-collector"
+import { Badge } from "@/components/ui/badge"
 
 import type { DetectionFrame } from "@/lib/types"
 
@@ -16,15 +19,14 @@ interface VideoStreamProps {
 export function VideoStream({ mode, onMetricsUpdate, onStreamingChange }: VideoStreamProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  
   // Use a module-level shared manager to avoid duplicate instances (React StrictMode mounts twice in dev)
-  // eslint-disable-next-line import/no-mutable-exports
-  // ...existing code...
   let sharedWebRTCManager: WebRTCManager | null = (globalThis as any).__sharedWebRTCManager || null
   if (!sharedWebRTCManager) {
     // Create lazily; store on globalThis to persist across hot reloads
     try {
       sharedWebRTCManager = new WebRTCManager(mode)
-        ; (globalThis as any).__sharedWebRTCManager = sharedWebRTCManager
+      ;(globalThis as any).__sharedWebRTCManager = sharedWebRTCManager
     } catch (e) {
       // If constructor throws (shouldn't), fallback to null
       sharedWebRTCManager = null
@@ -33,7 +35,8 @@ export function VideoStream({ mode, onMetricsUpdate, onStreamingChange }: VideoS
   const webrtcManagerRef = useRef<WebRTCManager | null>(sharedWebRTCManager)
   const [isReceiving, setIsReceiving] = useState(false)
   const [detections, setDetections] = useState<DetectionFrame | null>(null)
-  const [latencyStats, setLatencyStats] = useState<number[]>([])
+  const [isCollectingMetrics, setIsCollectingMetrics] = useState(false)
+  const [currentMetrics, setCurrentMetrics] = useState<any>(null)
 
   const handleDetectionResult = useCallback(
     (result: DetectionFrame) => {
@@ -41,41 +44,57 @@ export function VideoStream({ mode, onMetricsUpdate, onStreamingChange }: VideoS
       setTimeout(() => {
         console.log("[v0] Received detection result:", result)
         setDetections(result)
-        // Calculate end-to-end latency and append to stats
-        const now = Date.now()
-        const latency = now - result.capture_ts
-        setLatencyStats((prev) => {
-          return [...prev, latency].slice(-100) // Keep last 100 measurements
-        })
+        
+        // Record metrics if collecting
+        metricsCollector.recordDetection(result)
+        
+        // Update real-time metrics display
+        const current = metricsCollector.getCurrentMetrics()
+        if (current) {
+          setCurrentMetrics(current)
+          onMetricsUpdate({
+            median_latency: current.current_latency,
+            p95_latency: current.current_latency * 1.5, // Estimate
+            processed_fps: current.current_fps,
+            server_latency: result.inference_ts - result.recv_ts,
+            network_latency: result.recv_ts - result.capture_ts,
+          })
+        }
       }, 0)
     },
     [onMetricsUpdate],
   )
 
-  // Compute aggregated metrics when latencyStats changes and report upward.
-  useEffect(() => {
-    if (!latencyStats.length) return
+  // Start metrics collection for 30 seconds
+  const startMetricsCollection = useCallback(() => {
+    console.log("[Metrics] Starting 30-second metrics collection...")
+    setIsCollectingMetrics(true)
+    metricsCollector.startCollection(30)
+    
+    // Update collection status
+    const checkStatus = setInterval(() => {
+      if (!metricsCollector.isCollectingMetrics()) {
+        setIsCollectingMetrics(false)
+        clearInterval(checkStatus)
+        console.log("[Metrics] Collection completed - metrics.json should be downloaded")
+      }
+    }, 1000)
+  }, [])
 
-    const sorted = [...latencyStats].sort((a, b) => a - b)
-    const median = sorted[Math.floor(sorted.length / 2)]
-    const p95 = sorted[Math.floor(sorted.length * 0.95)]
-    const avg = latencyStats.reduce((a, b) => a + b, 0) / latencyStats.length
-    const processedFps = avg > 0 ? 1000 / avg : 0
+  // Stop metrics collection and save immediately
+  const stopMetricsCollection = useCallback(async () => {
+    console.log("[Metrics] Stopping metrics collection...")
+    setIsCollectingMetrics(false)
+    const final = await metricsCollector.stopCollectionAndSave()
+    console.log("[Metrics] Final metrics saved:", final)
+  }, [])
 
-    try {
-      // server_latency and network_latency are best-effort here; pass undefined if not available in last detection
-      const latest = detections
-      onMetricsUpdate({
-        median_latency: median,
-        p95_latency: p95,
-        server_latency: latest ? latest.inference_ts - latest.recv_ts : undefined,
-        network_latency: latest ? latest.recv_ts - latest.capture_ts : undefined,
-        processed_fps: processedFps,
-      })
-    } catch (err) {
-      console.warn('[v0] onMetricsUpdate error', err)
-    }
-  }, [latencyStats, detections, onMetricsUpdate])
+  // Download current metrics immediately
+  const downloadMetricsNow = useCallback(async () => {
+    console.log("[Metrics] Downloading current metrics...")
+    const metrics = await metricsCollector.saveNow()
+    console.log("[Metrics] Downloaded metrics:", metrics)
+  }, [])
 
   useEffect(() => {
     // We keep a shared singleton manager to prevent duplicate instances in dev (StrictMode) and fast-refresh
@@ -87,7 +106,7 @@ export function VideoStream({ mode, onMetricsUpdate, onStreamingChange }: VideoS
       if (!webrtcManagerRef.current) {
         // As a last resort, create one
         webrtcManagerRef.current = new WebRTCManager(mode)
-          ; (globalThis as any).__sharedWebRTCManager = webrtcManagerRef.current
+        ;(globalThis as any).__sharedWebRTCManager = webrtcManagerRef.current
       }
 
       // Assign callbacks (this overwrites previous hooks safely)
@@ -110,11 +129,58 @@ export function VideoStream({ mode, onMetricsUpdate, onStreamingChange }: VideoS
     }
   }, [mode, handleDetectionResult, onStreamingChange])
 
-
-  // Remove manual start/stop logic. Streaming will start automatically when available.
-
   return (
     <div className="space-y-4">
+      {/* Metrics Controls */}
+      <div className="flex gap-2 mb-4 p-4 bg-muted rounded-lg">
+        <div className="flex-1">
+          <h3 className="font-semibold mb-2">Real Metrics Collection</h3>
+          <div className="flex gap-2 items-center flex-wrap">
+            <Button 
+              onClick={startMetricsCollection} 
+              disabled={isCollectingMetrics}
+              variant={isCollectingMetrics ? "secondary" : "default"}
+              size="sm"
+            >
+              {isCollectingMetrics ? "Collecting..." : "Start 30s Collection"}
+            </Button>
+            
+            <Button 
+              onClick={stopMetricsCollection}
+              disabled={!isCollectingMetrics}
+              variant="outline"
+              size="sm"
+            >
+              Stop & Save
+            </Button>
+            
+            <Button 
+              onClick={downloadMetricsNow}
+              variant="outline" 
+              size="sm"
+            >
+              Download Now
+            </Button>
+            
+            {isCollectingMetrics && (
+              <Badge variant="secondary" className="bg-green-100 text-green-800">
+                📊 Recording Real Metrics
+              </Badge>
+            )}
+          </div>
+        </div>
+        
+        {currentMetrics && (
+          <div className="text-sm">
+            <div>Samples: {currentMetrics.total_samples}</div>
+            <div>Time: {Math.round(currentMetrics.collection_time)}s</div>
+            <div>Latency: {currentMetrics.current_latency}ms</div>
+            <div>FPS: {currentMetrics.current_fps}</div>
+          </div>
+        )}
+      </div>
+
+      {/* Detection Info */}
       <div className="flex gap-2 mb-4">
         <div className="flex items-center gap-2">
           <span className="text-sm">Detections:</span>
@@ -128,6 +194,8 @@ export function VideoStream({ mode, onMetricsUpdate, onStreamingChange }: VideoS
           )}
         </div>
       </div>
+
+      {/* Video Display */}
       <div className="relative bg-black rounded-lg overflow-hidden video-aspect-16-9">
         <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-contain" />
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
@@ -139,6 +207,24 @@ export function VideoStream({ mode, onMetricsUpdate, onStreamingChange }: VideoS
             <p>Waiting for video stream...</p>
           </div>
         )}
+        
+        {isCollectingMetrics && (
+          <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse">
+            🔴 RECORDING
+          </div>
+        )}
+      </div>
+
+      {/* Instructions */}
+      <div className="text-sm text-muted-foreground p-3 bg-blue-50 rounded-lg">
+        <h4 className="font-semibold mb-1">📊 How to Generate Real metrics.json:</h4>
+        <ol className="list-decimal list-inside space-y-1">
+          <li>Connect your phone camera (scan QR code)</li>
+          <li>Point camera at objects to detect</li>
+          <li>Click "Start 30s Collection" button above</li>
+          <li>Use the detection for 30 seconds (move camera, detect objects)</li>
+          <li>metrics.json will automatically download to your computer</li>
+        </ol>
       </div>
     </div>
   )

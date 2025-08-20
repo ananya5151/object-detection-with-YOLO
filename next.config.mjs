@@ -9,6 +9,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  output: 'standalone',
+  
   async headers() {
     return [
       {
@@ -37,10 +39,45 @@ const nextConfig = {
           },
         ],
       },
+      {
+        source: '/models/:path*',
+        headers: [
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'require-corp',
+          },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin',
+          },
+        ],
+      },
     ]
   },
+  
   experimental: {
     serverComponentsExternalPackages: ['socket.io'],
+  },
+  
+  webpack: (config, { dev, isServer }) => {
+    // Handle WASM files properly
+    config.experiments = {
+      asyncWebAssembly: true,
+      layers: true,
+    };
+    
+    // Ignore server-only modules in client bundle
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        child_process: false,
+      };
+    }
+
+    return config;
   },
 }
 

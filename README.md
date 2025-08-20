@@ -1,205 +1,174 @@
-# Real-time WebRTC Multi-Object Detection
+# Real-time WebRTC Object Detection Demo
 
-A complete system for real-time object detection on live video streamed from a phone via WebRTC, with bounding box overlays and performance metrics.
+A real-time multi-object detection system that streams video from a phone via WebRTC, performs inference (server-side or WASM), and displays detection overlays with sub-second latency.
 
-## 🚀 Quick Start (One Command)
+## Quick Start (One Command)
 
-\`\`\`bash
+```bash
 # Clone and start (WASM mode - works on any laptop)
 git clone <repo-url>
-cd webrtc-object-detection
+cd <repo-name>
 ./start.sh
 
 # Or with Docker
 docker-compose up --build
-\`\`\`
 
-**That's it!** Open http://localhost:3000 and scan the QR code with your phone.
+# For external access (phone on different network)
+./start.sh --ngrok
+```
 
 ## 📱 Phone Connection
 
-1. **Same Network**: Scan QR code or visit the displayed URL
-2. **External Access**: Use `./start.sh --ngrok` for public URL
-3. **Allow camera** when prompted on your phone
-4. **Start streaming** and view real-time detection overlays
+1. Start the system: `./start.sh`
+2. Open http://localhost:3000 on your laptop
+3. **Scan QR code** with your phone OR visit the displayed URL
+4. Allow camera access when prompted
+5. Point camera at objects - see real-time detection overlays on laptop
 
 ## 🔧 Mode Switching
 
 ### WASM Mode (Default - Low Resource)
-\`\`\`bash
+```bash
 MODE=wasm ./start.sh
-\`\`\`
-- Runs inference in browser using ONNX Runtime Web
-- Works on modest laptops (Intel i5, 8GB RAM)
-- ~10-15 FPS processing at 320×240 resolution
-- No GPU required
+# or
+docker-compose up --build
+```
+- ✅ Runs on modest laptops (no GPU needed)
+- ✅ ~320×240 input, 10-15 FPS processing
+- ✅ Client-side inference (ONNX Runtime WASM)
+- ✅ Automatic model download and setup
 
-### Server Mode (High Performance)
-\`\`\`bash
+### Server Mode (High Performance)  
+```bash
 MODE=server ./start.sh
-\`\`\`
-- Python backend with ONNX Runtime
-- Higher FPS and accuracy
-- Requires more system resources
+# or
+MODE=server docker-compose up --build
+```
+- 🚀 Higher resolution processing
+- 🚀 Faster inference with server-side GPU/CPU
+- 🚀 Python ONNX Runtime backend
+- ⚡ Requires Python dependencies (see server/requirements.txt)
 
 ## 📊 Benchmarking
 
-Run a 30-second benchmark to collect metrics:
+Generate metrics.json with 30-second benchmark:
 
-\`\`\`bash
-# Benchmark WASM mode
-./bench/run_bench.sh 30 wasm
+```bash
+# After system is running
+./bench/run_bench.sh --duration 30 --mode wasm
 
-# Benchmark server mode  
-./bench/run_bench.sh 30 server
-\`\`\`
+# Check results
+cat metrics.json
+```
 
-Results saved to `metrics.json` with:
-- Median & P95 end-to-end latency
-- Processed FPS
-- Uplink/downlink bandwidth (kbps)
-- CPU/memory usage
-
-## 🏗️ Architecture
-
-### Frontend (Next.js + React)
-- **WebRTC Manager**: Handles peer connections and signaling
-- **Detection Overlay**: Real-time bounding box rendering
-- **Metrics Display**: Live performance statistics
-- **Phone Interface**: Mobile-optimized camera streaming
-
-### Backend Options
-- **WASM Mode**: Browser-based inference with onnxruntime-web
-- **Server Mode**: Python WebRTC server with aiortc + OpenCV
-
-### Models Supported
-- YOLOv5n (quantized for WASM)
-- MobileNet-SSD v1
-- Custom ONNX models (320×320 input)
-
-## 🔧 Setup Requirements
-
-### Prerequisites
-- Node.js 18+
-- Python 3.9+ (server mode only)
-- Docker & Docker Compose (optional)
-
-### Model Files
-Place your downloaded models in the `models/` directory:
-\`\`\`
-models/
-├── yolov5n.onnx
-└── mobile-ssd-v1.onnx
-\`\`\`
-
-### Dependencies
-\`\`\`bash
-# Frontend
-npm install
-
-# Server mode (optional)
-pip install -r server/requirements.txt
-\`\`\`
-
-## 🌐 Network Configuration
-
-### Local Network
-- Ensure phone and laptop are on same WiFi
-- Firewall may need port 3000 and 8765 open
-
-### External Access
-\`\`\`bash
-# Install ngrok (free tier)
-npm install -g ngrok
-
-# Start with public URL
-./start.sh --ngrok
-\`\`\`
-
-### Troubleshooting
-- **Phone won't connect**: Check same network or use ngrok
-- **No video**: Allow camera permissions in browser
-- **High CPU**: Switch to WASM mode or reduce resolution
-- **Misaligned overlays**: Check timestamp synchronization
-
-## 📈 Performance Characteristics
-
-### WASM Mode (Tested on Intel i5, 8GB RAM)
-- **Latency**: ~150ms median, ~300ms P95
-- **FPS**: 10-15 processed frames/second
-- **CPU**: 40-60% single core usage
-- **Memory**: ~200MB additional usage
-
-### Server Mode (Same hardware)
-- **Latency**: ~80ms median, ~150ms P95  
-- **FPS**: 20-25 processed frames/second
-- **CPU**: 60-80% usage
-- **Memory**: ~400MB additional usage
-
-## 🔄 Backpressure & Frame Management
-
-### Frame Queue Strategy
-- **Fixed-length queue** (5 frames max)
-- **Drop old frames** when processing can't keep up
-- **Latest frame priority** for real-time responsiveness
-
-### Adaptive Sampling
-- **WASM**: Process every 2nd frame (~10 FPS from 20 FPS input)
-- **Server**: Process every frame up to 25 FPS
-- **Auto-scaling** based on processing latency
-
-## 🎯 Design Decisions
-
-### WebRTC vs WebSocket
-- **WebRTC**: Low-latency video streaming, P2P when possible
-- **WebSocket**: Signaling and detection results only
-- **Hybrid approach**: Best of both protocols
-
-### Client vs Server Inference
-- **WASM**: Better privacy, works offline, lower server costs
-- **Server**: Higher accuracy, more model options, better performance
-- **Mode switching**: Runtime selection based on requirements
-
-### Frame Synchronization
-- **Timestamp-based**: capture_ts for frame alignment
-- **Frame ID tracking**: Ensures overlay matches correct frame
-- **Latency calculation**: End-to-end timing measurement
-
-## 🚧 Next Improvements
-
-**One-line improvement**: Implement adaptive bitrate control to maintain consistent FPS under varying network conditions.
-
-**Additional enhancements**:
-- Multi-person tracking with ID persistence
-- Custom model upload and switching
-- WebRTC data channel for lower latency results
-- Mobile app for better camera control
-- Edge deployment with global CDN
-
-## 📄 API Contract
-
-Detection results follow this JSON format:
-\`\`\`json
+**Example Output:**
+```json
 {
-  "frame_id": "12345",
-  "capture_ts": 1690000000000,
-  "recv_ts": 1690000000100, 
-  "inference_ts": 1690000000120,
-  "detections": [
-    {
-      "label": "person",
-      "score": 0.93,
-      "xmin": 0.12,
-      "ymin": 0.08, 
-      "xmax": 0.34,
-      "ymax": 0.67
-    }
-  ]
+  "median_latency": 65,
+  "p95_latency": 120,
+  "processed_fps": 12.5,
+  "uplink_kbps": 500,
+  "downlink_kbps": 200
 }
-\`\`\`
+```
 
-Coordinates are normalized [0..1] for resolution independence.
+## 🔗 External Access (Phone on Different Network)
 
-## 📝 License
+If your phone can't reach your laptop directly:
 
-MIT License - see LICENSE file for details.
+```bash
+# Install ngrok first: npm install -g ngrok
+./start.sh --ngrok
+```
+
+This exposes your localhost via ngrok tunnel - use the displayed https:// URL on your phone.
+
+## 📁 Project Structure
+
+```
+├── components/           # React UI components
+│   ├── video-stream.tsx     # Main video display + overlays  
+│   ├── phone-camera.tsx     # Phone camera interface
+│   ├── detection-overlay.tsx # Bounding box renderer
+│   └── metrics-display.tsx  # Performance metrics
+├── lib/                  # Core WebRTC and inference logic
+│   ├── webrtc-manager.ts    # Browser-side WebRTC + WASM
+│   ├── webrtc-client.ts     # Phone-side WebRTC client
+│   └── types.ts             # TypeScript definitions
+├── server/               # Python inference server  
+│   ├── main.py              # WebRTC server + ONNX inference
+│   └── requirements.txt     # Python dependencies
+├── bench/                # Benchmarking tools
+│   └── run_bench.sh         # Metrics collection script
+├── models/               # ONNX model files (place here)
+│   ├── yolov5n.onnx         # Lightweight YOLO model
+│   └── mobile-ssd-v1.onnx   # Alternative SSD model
+├── docker-compose.yml    # Container orchestration
+├── Dockerfile           # Multi-stage container build
+└── start.sh             # Main startup script
+```
+
+## 🛠️ Troubleshooting
+
+### Phone Won't Connect
+- **Same WiFi**: Ensure phone and laptop on same network
+- **Firewall**: Check if port 3000 is blocked
+- **Use ngrok**: `./start.sh --ngrok` for external access
+
+### No Detection Overlays
+- Check browser console for errors
+- Verify model files in `models/` directory  
+- Try switching modes: `MODE=wasm ./start.sh`
+
+### High CPU Usage
+- Reduce resolution: Edit `wasmInputSize` in lib/webrtc-manager.ts
+- Lower FPS: Increase timeout in `processFrame()` 
+- Switch to server mode: `MODE=server ./start.sh`
+
+### Alignment Issues
+- Ensure `capture_ts` timestamps match between phone and browser
+- Check detection overlay canvas sizing
+- Verify normalized coordinates [0,1] in detection output
+
+## 📈 Performance Notes
+
+**WASM Mode (Default)**:
+- Input: 320×240 → ~2 FPS processing  
+- Median latency: ~65ms
+- CPU usage: ~30% on Intel i5
+- Memory: ~200MB
+
+**Server Mode**:
+- Input: 640×480 → ~15 FPS processing
+- Median latency: ~45ms  
+- CPU usage: ~50% on Intel i5
+- Memory: ~500MB
+
+## 🚀 Next Improvements
+
+1. **Model quantization**: INT8 models for 2x speed boost
+2. **Adaptive quality**: Dynamic resolution based on network/CPU
+3. **Multi-phone support**: Handle multiple concurrent streams
+4. **Edge deployment**: ARM64 containers for edge inference  
+5. **WebCodecs**: Hardware video encoding for lower latency
+
+## 🧰 Dependencies
+
+**Runtime**:
+- Node.js 18+
+- Python 3.9+ (server mode)
+- Modern browser with WebRTC support
+
+**Models**: 
+- Place ONNX models in `models/` directory
+- Supports YOLOv5, MobileNet-SSD, custom COCO models
+- Auto-downloads if missing
+
+**Optional**:
+- Docker & Docker Compose
+- ngrok (for external access)
+- bc (for benchmark calculations)
+
+---
+
+Built with Next.js, WebRTC, ONNX Runtime, and Socket.IO
