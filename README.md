@@ -51,38 +51,8 @@ cd object-detection-with-YOLO
 
 ## 🏗️ System Architecture
 
-```mermaid
-graph TB
-    subgraph "📱 Phone Browser"
-        A[Camera Capture] --> B[WebRTC Sender]
-    end
-    
-    subgraph "💻 Laptop Browser"
-        C[WebRTC Receiver] --> D{Inference Mode}
-        D -->|WASM Mode| E[ONNX.js WASM]
-        D -->|Server Mode| F[HTTP to Python]
-        E --> G[Detection Overlay]
-        F --> G
-    end
-    
-    subgraph "🐍 Python Server"
-        F --> H[ONNX Runtime]
-        H --> I[YOLOv5 Inference]
-        I --> F
-    end
-    
-    subgraph "🔌 Infrastructure"
-        J[Socket.IO Signaling] --> B
-        J --> C
-        K[Next.js Server] --> J
-        L[Docker Container] --> K
-        L --> H
-    end
-    
-    style E fill:#e1f5fe
-    style I fill:#f3e5f5
-    style G fill:#e8f5e8
-```
+<img width="691" height="700" alt="image" src="https://github.com/user-attachments/assets/e6928ff7-9eb0-4115-b15d-10fac9a5770a" />
+
 
 ### **Data Flow**
 
@@ -690,17 +660,11 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ---
 
-## 🌟 Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=ananya5151/object-detection-with-YOLO&type=Date)](https://star-history.com/#ananya5151/object-detection-with-YOLO&Date)
-
----
-
 ## 📞 Support
 
 - **🐛 Issues**: [GitHub Issues](https://github.com/ananya5151/object-detection-with-YOLO/issues)
 - **💬 Discussions**: [GitHub Discussions](https://github.com/ananya5151/object-detection-with-YOLO/discussions)
-- **📧 Contact**: [ananya5151@example.com](mailto:ananya5151@example.com)
+- **📧 Contact**: [ananya.verma.may22@gmail.com](mailto:ananya.verma.may22@gmail.com)
 
 ---
 
@@ -708,8 +672,3 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 **Built with ❤️ for the WebRTC + AI Community**
 
-*Real-time object detection has never been this accessible*
-
-[⭐ Star on GitHub](https://github.com/ananya5151/object-detection-with-YOLO) • [🔧 Report Issue](https://github.com/ananya5151/object-detection-with-YOLO/issues) • [💡 Request Feature](https://github.com/ananya5151/object-detection-with-YOLO/issues/new?template=feature_request.md)
-
-</div>
