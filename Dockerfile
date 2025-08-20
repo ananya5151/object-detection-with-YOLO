@@ -1,15 +1,14 @@
-# Stage 1: Use an official Node.js image
-FROM node:18-bullseye
+# Stage 1: Use a slimmer official Node.js image
+FROM node:18-bullseye-slim
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# --- NEW LINE TO FIX THE ERROR ---
-# Install Python3 and pip using the system's package manager
-RUN apt-get update && apt-get install -y python3 python3-pip
+# Install Python3 and pip and clean up cache to save space
+RUN apt-get update && apt-get install -y python3 python3-pip --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies for server mode
-# Copy the requirements file first to leverage Docker cache
 COPY server/requirements.txt ./server/requirements.txt
 RUN pip install --no-cache-dir -r server/requirements.txt
 
@@ -29,7 +28,6 @@ RUN npm run build
 EXPOSE 3000
 
 # Set the default command to start the app in WASM mode.
-# This can be overridden in Render's environment variables.
 ENV MODE=wasm
 ENV PORT=3000
 

@@ -41,6 +41,9 @@ const nextConfig = {
     if (!isServer) {
       config.resolve = config.resolve || {};
       config.resolve.fallback = { ...(config.resolve.fallback || {}), fs: false, path: false, crypto: false, net: false, tls: false };
+
+      // --- THIS IS THE NEW LINE FOR MEMORY OPTIMIZATION ---
+      config.optimization.minimizer[0].options.parallel = 2;
     }
 
     config.module = config.module || {};
