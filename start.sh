@@ -290,15 +290,20 @@ if [ "$MODE" = "server" ]; then
 {}
 JSON
 
-    cat > .next/routes-manifest.json <<'JSON' 2>/dev/null || true
+        cat > .next/routes-manifest.json <<'JSON' 2>/dev/null || true
 {
-  "version": 1,
-  "pages": {},
-  "dynamicRoutes": [],
-  "dataRoutes": [],
-  "staticRoutes": [],
-  "redirects": [],
-  "rewrites": []
+    "version": 1,
+    "pages": {},
+    "dynamicRoutes": [],
+    "dataRoutes": [],
+    "staticRoutes": [],
+    "headers": [],
+    "redirects": [],
+    "rewrites": {
+        "beforeFiles": [],
+        "afterFiles": [],
+        "fallback": []
+    }
 }
 JSON
 
@@ -349,15 +354,20 @@ else
 {}
 JSON
 
-    cat > .next/routes-manifest.json <<'JSON' 2>/dev/null || true
+        cat > .next/routes-manifest.json <<'JSON' 2>/dev/null || true
 {
-  "version": 1,
-  "pages": {},
-  "dynamicRoutes": [],
-  "dataRoutes": [],
-  "staticRoutes": [],
-  "redirects": [],
-  "rewrites": []
+    "version": 1,
+    "pages": {},
+    "dynamicRoutes": [],
+    "dataRoutes": [],
+    "staticRoutes": [],
+    "headers": [],
+    "redirects": [],
+    "rewrites": {
+        "beforeFiles": [],
+        "afterFiles": [],
+        "fallback": []
+    }
 }
 JSON
 
