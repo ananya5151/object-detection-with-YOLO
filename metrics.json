@@ -1,17 +1,16 @@
 {
   "benchmark_info": {
-    "duration": 30,
-    "samples_collected": 375,
-    "timestamp": "2025-08-20T12:00:00.000Z",
-    "total_frames": 375
+    "duration": 13.53,
+    "samples_collected": 8,
+    "timestamp": "2025-08-20T21:55:16.185Z",
+    "total_frames": 8
   },
-  "median_latency": 65,
-  "p95_latency": 120,
-  "processed_fps": 12.5,
-  "uplink_kbps": 800,
-  "downlink_kbps": 300,
-  "server_latency": 25,
-  "network_latency": 15,
-  "raw_samples": 375,
-  "notes": "Synthetic example metrics for a 30s run. Replace with real output by running the bench (./bench/run_bench.sh) or using the in-app metrics collector."
+  "median_latency": 5,
+  "p95_latency": 15,
+  "processed_fps": 0.5,
+  "uplink_kbps": 27,
+  "downlink_kbps": 80,
+  "server_latency": 0,
+  "network_latency": 0,
+  "raw_samples": 8
 }

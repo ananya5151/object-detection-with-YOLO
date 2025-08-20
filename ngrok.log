@@ -1,38 +1,38 @@
-t=2025-08-21T00:04:10+0530 lvl=info msg="no configuration paths supplied"
-t=2025-08-21T00:04:10+0530 lvl=info msg="using configuration at default config path" path=C:\\Users\\anany\\AppData\\Local/ngrok/ngrok.yml
-t=2025-08-21T00:04:10+0530 lvl=info msg="open config file" path=C:\\Users\\anany\\AppData\\Local\\ngrok\\ngrok.yml err=nil
-t=2025-08-21T00:04:10+0530 lvl=info msg="starting web service" obj=web addr=127.0.0.1:4040 allow_hosts=[]
-t=2025-08-21T00:04:10+0530 lvl=info msg="client session established" obj=tunnels.session
-t=2025-08-21T00:04:10+0530 lvl=info msg="tunnel session started" obj=tunnels.session
-t=2025-08-21T00:04:11+0530 lvl=info msg="started tunnel" obj=tunnels name=command_line addr=http://localhost:3000 url=https://c19d287ee556.ngrok-free.app
-t=2025-08-21T00:04:11+0530 lvl=info msg="update available" obj=updater
-t=2025-08-21T00:04:15+0530 lvl=info msg=start pg=/api/tunnels id=113f1415176c7c73
-t=2025-08-21T00:04:15+0530 lvl=info msg=end pg=/api/tunnels id=113f1415176c7c73 status=200 dur=0s
-t=2025-08-21T00:04:16+0530 lvl=info msg=start pg=/api/tunnels id=5fcb9aaaa7999b85
-t=2025-08-21T00:04:16+0530 lvl=info msg=end pg=/api/tunnels id=5fcb9aaaa7999b85 status=200 dur=0s
-t=2025-08-21T00:04:30+0530 lvl=info msg="join connections" obj=join id=baa1a7ffa25f l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:65439
-t=2025-08-21T00:04:51+0530 lvl=info msg="join connections" obj=join id=cf16c2f00ee5 l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:65439
-t=2025-08-21T00:04:51+0530 lvl=info msg="join connections" obj=join id=48d98a344f35 l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:65439
-t=2025-08-21T00:04:51+0530 lvl=info msg="join connections" obj=join id=236d82a625c9 l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:65439
-t=2025-08-21T00:04:51+0530 lvl=info msg="join connections" obj=join id=9aa279d371ea l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:65439
-t=2025-08-21T00:04:51+0530 lvl=info msg="join connections" obj=join id=cbb4ce40b7dc l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:65439
-t=2025-08-21T00:04:54+0530 lvl=info msg="join connections" obj=join id=8421d260c923 l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:65439
-t=2025-08-21T00:04:55+0530 lvl=info msg="join connections" obj=join id=a6c6bd87b246 l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:49267
-t=2025-08-21T00:04:55+0530 lvl=info msg="join connections" obj=join id=d94c299bd2d3 l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:65439
-t=2025-08-21T00:04:55+0530 lvl=info msg="join connections" obj=join id=45b29121c5af l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:49270
-t=2025-08-21T00:05:10+0530 lvl=info msg="join connections" obj=join id=3dd5f5b88a86 l=[::1]:3000 r=[2401:4900:1c62:9753:a7e7:52cd:21b2:1f66]:39356
-t=2025-08-21T00:05:11+0530 lvl=info msg="join connections" obj=join id=fcf314998650 l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:65439
-t=2025-08-21T00:05:12+0530 lvl=info msg="join connections" obj=join id=5d29c38609a6 l=[::1]:3000 r=[2401:4900:1c62:9753:a7e7:52cd:21b2:1f66]:39356
-t=2025-08-21T00:05:12+0530 lvl=info msg="join connections" obj=join id=0c1070309034 l=[::1]:3000 r=[2401:4900:1c62:9753:a7e7:52cd:21b2:1f66]:39356
-t=2025-08-21T00:05:12+0530 lvl=info msg="join connections" obj=join id=550c75f327c6 l=[::1]:3000 r=[2401:4900:1c62:9753:a7e7:52cd:21b2:1f66]:39356
-t=2025-08-21T00:05:12+0530 lvl=info msg="join connections" obj=join id=d9a7d965f9e9 l=[::1]:3000 r=[2401:4900:1c62:9753:a7e7:52cd:21b2:1f66]:39356
-t=2025-08-21T00:05:13+0530 lvl=info msg="join connections" obj=join id=d420e4c737b9 l=[::1]:3000 r=[2401:4900:1c62:9753:a7e7:52cd:21b2:1f66]:39364
-t=2025-08-21T00:05:13+0530 lvl=info msg="join connections" obj=join id=f278668d3b03 l=[::1]:3000 r=[2401:4900:1c62:9753:a7e7:52cd:21b2:1f66]:39380
-t=2025-08-21T00:05:13+0530 lvl=info msg="join connections" obj=join id=3afd3958acfb l=[::1]:3000 r=[2401:4900:1c62:9753:a7e7:52cd:21b2:1f66]:39384
-t=2025-08-21T00:05:44+0530 lvl=info msg="join connections" obj=join id=baf7c378fd05 l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:65439
-t=2025-08-21T00:33:34+0530 lvl=info msg="received stop request" obj=app stopReq="{err:<nil> restart:false}"
-t=2025-08-21T00:33:34+0530 lvl=info msg="session closing" obj=tunnels.session err=nil
-t=2025-08-21T00:33:34+0530 lvl=info msg="accept failed" obj=tunnels.session obj=csess id=0807570a46a1 err="reconnecting session closed"
-t=2025-08-21T00:33:34+0530 lvl=info msg="no more state changes" obj=tunnels.session
-t=2025-08-21T00:33:34+0530 lvl=info msg="failed to accept connection: Listener closed" obj=tunnels.session clientid=1677fd2ba44166647b286046727f04ae
-t=2025-08-21T00:33:34+0530 lvl=warn msg="Stopping forwarder" name=command_line acceptErr="failed to accept connection: Listener closed"
+t=2025-08-21T03:22:39+0530 lvl=info msg="no configuration paths supplied"
+t=2025-08-21T03:22:39+0530 lvl=info msg="using configuration at default config path" path=C:\\Users\\anany\\AppData\\Local/ngrok/ngrok.yml
+t=2025-08-21T03:22:39+0530 lvl=info msg="open config file" path=C:\\Users\\anany\\AppData\\Local\\ngrok\\ngrok.yml err=nil
+t=2025-08-21T03:22:39+0530 lvl=info msg="starting web service" obj=web addr=127.0.0.1:4040 allow_hosts=[]
+t=2025-08-21T03:22:40+0530 lvl=info msg="client session established" obj=tunnels.session
+t=2025-08-21T03:22:40+0530 lvl=info msg="tunnel session started" obj=tunnels.session
+t=2025-08-21T03:22:40+0530 lvl=info msg="started tunnel" obj=tunnels name=command_line addr=http://localhost:3000 url=https://181e37788fe1.ngrok-free.app
+t=2025-08-21T03:22:40+0530 lvl=info msg=start pg=/api/tunnels id=98aaccc67e468ecb
+t=2025-08-21T03:22:40+0530 lvl=info msg=end pg=/api/tunnels id=98aaccc67e468ecb status=200 dur=1.1634ms
+t=2025-08-21T03:22:40+0530 lvl=info msg="update available" obj=updater
+t=2025-08-21T03:22:41+0530 lvl=info msg=start pg=/api/tunnels id=72a0bc5e779f8b4c
+t=2025-08-21T03:22:41+0530 lvl=info msg=end pg=/api/tunnels id=72a0bc5e779f8b4c status=200 dur=511.3µs
+t=2025-08-21T03:22:55+0530 lvl=warn msg="failed to open private leg" id=3094b62b3746 privaddr=localhost:3000 err="dial tcp [::1]:3000: connectex: No connection could be made because the target machine actively refused it."
+t=2025-08-21T03:22:56+0530 lvl=warn msg="failed to open private leg" id=ad25466b3766 privaddr=localhost:3000 err="dial tcp [::1]:3000: connectex: No connection could be made because the target machine actively refused it."
+t=2025-08-21T03:23:16+0530 lvl=info msg="join connections" obj=join id=3e566f538abb l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:63002
+t=2025-08-21T03:23:34+0530 lvl=info msg="join connections" obj=join id=d7370504bcf7 l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:63002
+t=2025-08-21T03:23:34+0530 lvl=info msg="join connections" obj=join id=5608285eb338 l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:63002
+t=2025-08-21T03:23:35+0530 lvl=info msg="join connections" obj=join id=2d80c83d7bc3 l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:63002
+t=2025-08-21T03:23:35+0530 lvl=info msg="join connections" obj=join id=9700512fc74c l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:63002
+t=2025-08-21T03:23:38+0530 lvl=info msg="join connections" obj=join id=92b8fb8085ce l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:63002
+t=2025-08-21T03:23:38+0530 lvl=info msg="join connections" obj=join id=de360f1649ea l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:63107
+t=2025-08-21T03:23:39+0530 lvl=info msg="join connections" obj=join id=449ab2c0c74c l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:63002
+t=2025-08-21T03:23:39+0530 lvl=info msg="join connections" obj=join id=d7be67605b3b l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:63110
+t=2025-08-21T03:24:15+0530 lvl=info msg="join connections" obj=join id=6b86f5610599 l=[::1]:3000 r=[2401:4900:a150:9437:ac92:cfff:feed:8896]:40304
+t=2025-08-21T03:24:16+0530 lvl=info msg="join connections" obj=join id=5ec7fc90d7fa l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:63002
+t=2025-08-21T03:24:16+0530 lvl=info msg="join connections" obj=join id=574b9ba0bc94 l=[::1]:3000 r=[2401:4900:a150:9437:ac92:cfff:feed:8896]:40304
+t=2025-08-21T03:24:16+0530 lvl=info msg="join connections" obj=join id=20a1ba4a2981 l=[::1]:3000 r=[2401:4900:a150:9437:ac92:cfff:feed:8896]:40304
+t=2025-08-21T03:24:16+0530 lvl=info msg="join connections" obj=join id=1730e34243e0 l=[::1]:3000 r=[2401:4900:a150:9437:ac92:cfff:feed:8896]:40304
+t=2025-08-21T03:24:16+0530 lvl=info msg="join connections" obj=join id=20e3f362e462 l=[::1]:3000 r=[2401:4900:a150:9437:ac92:cfff:feed:8896]:40304
+t=2025-08-21T03:24:18+0530 lvl=info msg="join connections" obj=join id=99ca1776a87f l=[::1]:3000 r=[2401:4900:a150:9437:ac92:cfff:feed:8896]:40336
+t=2025-08-21T03:24:18+0530 lvl=info msg="join connections" obj=join id=4dc012cd3636 l=[::1]:3000 r=[2401:4900:a150:9437:ac92:cfff:feed:8896]:40344
+t=2025-08-21T03:25:16+0530 lvl=info msg="join connections" obj=join id=f746257905ca l=[::1]:3000 r=[2401:4900:1c62:9753:611e:aae5:a012:61e2]:63002
+t=2025-08-21T03:37:14+0530 lvl=info msg="received stop request" obj=app stopReq="{err:<nil> restart:false}"
+t=2025-08-21T03:37:14+0530 lvl=info msg="session closing" obj=tunnels.session err=nil
+t=2025-08-21T03:37:14+0530 lvl=info msg="accept failed" obj=tunnels.session obj=csess id=ef788aa72e1e err="reconnecting session closed"
+t=2025-08-21T03:37:14+0530 lvl=info msg="failed to accept connection: Listener closed" obj=tunnels.session clientid=333a4c3d48c470ff924d407ba7260ae8
+t=2025-08-21T03:37:14+0530 lvl=warn msg="Stopping forwarder" name=command_line acceptErr="failed to accept connection: Listener closed"
+t=2025-08-21T03:37:14+0530 lvl=info msg="no more state changes" obj=tunnels.session
