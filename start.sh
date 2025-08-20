@@ -285,9 +285,26 @@ if [ "$MODE" = "server" ]; then
     # Create missing Next.js files for development mode
     echo "📦 Creating missing Next.js files..."
     mkdir -p .next
-    echo '{}' > .next/prerender-manifest.json 2>/dev/null || true
-    echo '{}' > .next/routes-manifest.json 2>/dev/null || true
-    echo '{"version": 3, "pages": {}, "pageKeys": {}}' > .next/pages-manifest.json 2>/dev/null || true
+    # Minimal safe manifests to satisfy Next.js runtime when build failed
+    cat > .next/prerender-manifest.json <<'JSON' 2>/dev/null || true
+{}
+JSON
+
+    cat > .next/routes-manifest.json <<'JSON' 2>/dev/null || true
+{
+  "version": 1,
+  "pages": {},
+  "dynamicRoutes": [],
+  "dataRoutes": [],
+  "staticRoutes": [],
+  "redirects": [],
+  "rewrites": []
+}
+JSON
+
+    cat > .next/pages-manifest.json <<'JSON' 2>/dev/null || true
+{"version": 3, "pages": {}, "pageKeys": {}}
+JSON
     
     # Start Python inference server
     if [ -f "server/main.py" ]; then
@@ -327,9 +344,26 @@ else
     # Create missing Next.js files for development mode
     echo "📦 Creating missing Next.js files..."
     mkdir -p .next
-    echo '{}' > .next/prerender-manifest.json 2>/dev/null || true
-    echo '{}' > .next/routes-manifest.json 2>/dev/null || true
-    echo '{"version": 3, "pages": {}, "pageKeys": {}}' > .next/pages-manifest.json 2>/dev/null || true
+    # Minimal safe manifests to satisfy Next.js runtime when build failed
+    cat > .next/prerender-manifest.json <<'JSON' 2>/dev/null || true
+{}
+JSON
+
+    cat > .next/routes-manifest.json <<'JSON' 2>/dev/null || true
+{
+  "version": 1,
+  "pages": {},
+  "dynamicRoutes": [],
+  "dataRoutes": [],
+  "staticRoutes": [],
+  "redirects": [],
+  "rewrites": []
+}
+JSON
+
+    cat > .next/pages-manifest.json <<'JSON' 2>/dev/null || true
+{"version": 3, "pages": {}, "pageKeys": {}}
+JSON
     
     # Start Next.js frontend with integrated Socket.IO server
     echo "🔌 Starting integrated Next.js + Socket.IO server..."
