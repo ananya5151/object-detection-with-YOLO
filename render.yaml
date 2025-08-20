@@ -1,0 +1,21 @@
+# Render.com deployment configuration
+# This file configures deployment to Render.com
+services:
+  - type: web
+    name: webrtc-object-detection
+    env: docker
+    dockerfilePath: ./Dockerfile.simple
+    region: oregon
+    plan: starter  # Free tier to start
+    branch: main
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MODE
+        value: wasm
+      - key: PORT
+        value: 3000
+      - key: HOSTNAME
+        value: "0.0.0.0"
+    healthCheckPath: /api/health
+    autoDeploy: true
