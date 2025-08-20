@@ -282,6 +282,13 @@ fi
 if [ "$MODE" = "server" ]; then
     echo "🖥️  Starting server mode..."
     
+    # Create missing Next.js files for development mode
+    echo "📦 Creating missing Next.js files..."
+    mkdir -p .next
+    echo '{}' > .next/prerender-manifest.json 2>/dev/null || true
+    echo '{}' > .next/routes-manifest.json 2>/dev/null || true
+    echo '{"version": 3, "pages": {}, "pageKeys": {}}' > .next/pages-manifest.json 2>/dev/null || true
+    
     # Start Python inference server
     if [ -f "server/main.py" ]; then
         echo "Starting Python inference server..."
@@ -316,6 +323,13 @@ if [ "$MODE" = "server" ]; then
     
 else
     echo "🌐 Starting WASM mode..."
+    
+    # Create missing Next.js files for development mode
+    echo "📦 Creating missing Next.js files..."
+    mkdir -p .next
+    echo '{}' > .next/prerender-manifest.json 2>/dev/null || true
+    echo '{}' > .next/routes-manifest.json 2>/dev/null || true
+    echo '{"version": 3, "pages": {}, "pageKeys": {}}' > .next/pages-manifest.json 2>/dev/null || true
     
     # Start Next.js frontend with integrated Socket.IO server
     echo "🔌 Starting integrated Next.js + Socket.IO server..."
