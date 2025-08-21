@@ -282,35 +282,6 @@ fi
 if [ "$MODE" = "server" ]; then
     echo "🖥️  Starting server mode..."
     
-    # Create missing Next.js files for development mode
-    echo "📦 Creating missing Next.js files..."
-    mkdir -p .next
-    # Minimal safe manifests to satisfy Next.js runtime when build failed
-    cat > .next/prerender-manifest.json <<'JSON' 2>/dev/null || true
-{}
-JSON
-
-        cat > .next/routes-manifest.json <<'JSON' 2>/dev/null || true
-{
-    "version": 1,
-    "pages": {},
-    "dynamicRoutes": [],
-    "dataRoutes": [],
-    "staticRoutes": [],
-    "headers": [],
-    "redirects": [],
-    "rewrites": {
-        "beforeFiles": [],
-        "afterFiles": [],
-        "fallback": []
-    }
-}
-JSON
-
-    cat > .next/pages-manifest.json <<'JSON' 2>/dev/null || true
-{"version": 3, "pages": {}, "pageKeys": {}}
-JSON
-    
     # Start Python inference server
     if [ -f "server/main.py" ]; then
         echo "Starting Python inference server..."
@@ -345,35 +316,6 @@ JSON
     
 else
     echo "🌐 Starting WASM mode..."
-    
-    # Create missing Next.js files for development mode
-    echo "📦 Creating missing Next.js files..."
-    mkdir -p .next
-    # Minimal safe manifests to satisfy Next.js runtime when build failed
-    cat > .next/prerender-manifest.json <<'JSON' 2>/dev/null || true
-{}
-JSON
-
-        cat > .next/routes-manifest.json <<'JSON' 2>/dev/null || true
-{
-    "version": 1,
-    "pages": {},
-    "dynamicRoutes": [],
-    "dataRoutes": [],
-    "staticRoutes": [],
-    "headers": [],
-    "redirects": [],
-    "rewrites": {
-        "beforeFiles": [],
-        "afterFiles": [],
-        "fallback": []
-    }
-}
-JSON
-
-    cat > .next/pages-manifest.json <<'JSON' 2>/dev/null || true
-{"version": 3, "pages": {}, "pageKeys": {}}
-JSON
     
     # Start Next.js frontend with integrated Socket.IO server
     echo "🔌 Starting integrated Next.js + Socket.IO server..."
