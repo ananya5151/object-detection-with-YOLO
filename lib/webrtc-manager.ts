@@ -1,4 +1,5 @@
-import { io, type Socket } from "socket.io-client"
+// Conditional Socket.IO import - only load in development
+import type { Socket } from "socket.io-client"
 import type { Detection, DetectionFrame } from "./types"
 
 export class WebRTCManager {
@@ -150,7 +151,9 @@ export class WebRTCManager {
     }
   }
 
-  private setupSocket() {
+  private async setupSocket() {
+    // Dynamically import Socket.IO only when needed (dev mode)
+    const { io } = await import("socket.io-client")
 
     // Always use the same host and protocol as the frontend (works for localhost, LAN, and ngrok)
     const socketUrl = typeof window !== "undefined"
