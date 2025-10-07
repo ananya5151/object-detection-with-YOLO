@@ -436,12 +436,12 @@ export class WebRTCManager {
 
   private async handleOffer(offer: RTCSessionDescriptionInit, phoneClientId?: string) {
     console.log('[Laptop] Received offer from phone:', phoneClientId)
-    
+
     // Store the phone's clientId for ICE candidate routing
     if (phoneClientId) {
       this.remotePeerClientId = phoneClientId
     }
-    
+
     // Ensure we have a peerConnection ready to accept the offer
     if (!this.peerConnection) {
 
