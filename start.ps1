@@ -40,9 +40,9 @@ if ($MODE -eq "wasm") {
     if (-not (Test-Path "public/onnx-wasm")) { New-Item -ItemType Directory -Path "public/onnx-wasm" | Out-Null }
     if (-not (Test-Path "public/onnx-wasm/ort-wasm.wasm")) {
         Write-Host "⬇️  Downloading ONNX Runtime WASM files..."
-        Invoke-WebRequest -Uri "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.16.3/dist/ort-wasm.wasm" -OutFile "public/onnx-wasm/ort-wasm.wasm"
-        Invoke-WebRequest -Uri "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.16.3/dist/ort-wasm-simd.wasm" -OutFile "public/onnx-wasm/ort-wasm-simd.wasm"
-        Invoke-WebRequest -Uri "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.16.3/dist/ort-wasm-threaded.wasm" -OutFile "public/onnx-wasm/ort-wasm-threaded.wasm"
+    Invoke-WebRequest -Uri "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort-wasm.wasm" -OutFile "public/onnx-wasm/ort-wasm.wasm"
+    Invoke-WebRequest -Uri "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort-wasm-simd.wasm" -OutFile "public/onnx-wasm/ort-wasm-simd.wasm"
+    Invoke-WebRequest -Uri "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort-wasm-threaded.wasm" -OutFile "public/onnx-wasm/ort-wasm-threaded.wasm"
     }
     if (Test-Path $defaultModel) {
         Copy-Item $defaultModel public/models/yolov5n.onnx -Force

@@ -171,7 +171,8 @@ export class WebRTCManager {
       // Load ONNX Runtime (CDN preferred, local fallback)
       try {
         const script = document.createElement("script")
-        script.src = "https://unpkg.com/onnxruntime-web@1.16.3/dist/ort.min.js"
+        // Align CDN version with installed npm package to avoid API/behavior mismatches
+        script.src = "https://unpkg.com/onnxruntime-web@1.22.0/dist/ort.min.js"
         document.head.appendChild(script)
 
         await new Promise((resolve, reject) => {
@@ -182,7 +183,8 @@ export class WebRTCManager {
         ort = (window as any).ort
         if (!ort) throw new Error("ONNX Runtime not available after CDN load")
         if (ort.env && ort.env.wasm) {
-          ort.env.wasm.wasmPaths = "https://unpkg.com/onnxruntime-web@1.16.3/dist/"
+          // Ensure ort fetches wasm assets from the same versioned CDN path
+          ort.env.wasm.wasmPaths = "https://unpkg.com/onnxruntime-web@1.22.0/dist/"
           ort.env.wasm.numThreads = 1
           ort.env.logLevel = "warning"
         }

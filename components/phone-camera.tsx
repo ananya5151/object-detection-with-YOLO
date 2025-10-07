@@ -99,7 +99,9 @@ export function PhoneCamera({ onConnectionChange, onStreamingChange }: PhoneCame
 
     if (!hasPermission) {
       stream = await requestCameraPermission()
-      if (!stream) return
+      if (!stream) {
+        return
+      }
     } else if (videoRef.current?.srcObject) {
       stream = videoRef.current.srcObject as MediaStream
     }
@@ -116,7 +118,9 @@ export function PhoneCamera({ onConnectionChange, onStreamingChange }: PhoneCame
   const startCameraAndStream = async () => {
     if (!hasPermission) {
       const s = await requestCameraPermission()
-      if (!s) return
+      if (!s) {
+        return
+      }
     }
     await startStreaming()
   }

@@ -1,0 +1,29 @@
+{
+    "version": "0.2",
+    "language": "en",
+    "words": [
+        "webrtc",
+        "onnx",
+        "onnxruntime",
+        "yolov",
+        "kbps",
+        "aiortc",
+        "cuda",
+        "ndarray",
+        "backpressure",
+        "objectness",
+        "dtls",
+        "srtp",
+        "qrcode",
+        "SocketIO",
+        "mobilenet",
+        "ngrok",
+        "NGROK",
+        "PIDS",
+        "pkill",
+        "prerender",
+        "onnxruntimeweb",
+        "GeistSans",
+        "GeistMono"
+    ]
+}

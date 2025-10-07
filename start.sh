@@ -167,9 +167,9 @@ if [ "$MODE" = "wasm" ]; then
     if [ ! -f "public/onnx-wasm/ort-wasm.wasm" ]; then
         echo "⬇️  Downloading ONNX Runtime WASM files..."
         if command -v curl &> /dev/null; then
-            curl -L -f -o public/onnx-wasm/ort-wasm.wasm https://cdn.jsdelivr.net/npm/onnxruntime-web@1.16.3/dist/ort-wasm.wasm || echo "⚠️  WASM download failed"
-            curl -L -f -o public/onnx-wasm/ort-wasm-simd.wasm https://cdn.jsdelivr.net/npm/onnxruntime-web@1.16.3/dist/ort-wasm-simd.wasm || echo "⚠️  WASM SIMD download failed"
-            curl -L -f -o public/onnx-wasm/ort-wasm-threaded.wasm https://cdn.jsdelivr.net/npm/onnxruntime-web@1.16.3/dist/ort-wasm-threaded.wasm || echo "⚠️  WASM threaded download failed"
+            curl -L -f -o public/onnx-wasm/ort-wasm.wasm https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort-wasm.wasm || echo "⚠️  WASM download failed"
+            curl -L -f -o public/onnx-wasm/ort-wasm-simd.wasm https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort-wasm-simd.wasm || echo "⚠️  WASM SIMD download failed"
+            curl -L -f -o public/onnx-wasm/ort-wasm-threaded.wasm https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort-wasm-threaded.wasm || echo "⚠️  WASM threaded download failed"
         else
             echo "⚠️  curl not available - WASM files must be downloaded manually"
         fi

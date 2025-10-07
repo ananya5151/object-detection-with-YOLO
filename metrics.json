@@ -1,16 +1,16 @@
 {
   "benchmark_info": {
-    "duration": 13.53,
-    "samples_collected": 8,
-    "timestamp": "2025-08-20T21:55:16.185Z",
-    "total_frames": 8
+    "duration": 13.575,
+    "samples_collected": 6,
+    "timestamp": "2025-08-21T02:43:04.032Z",
+    "total_frames": 6
   },
-  "median_latency": 5,
-  "p95_latency": 15,
-  "processed_fps": 0.5,
-  "uplink_kbps": 27,
-  "downlink_kbps": 80,
+  "median_latency": 6,
+  "p95_latency": 6,
+  "processed_fps": 0.4,
+  "uplink_kbps": 18,
+  "downlink_kbps": 60,
   "server_latency": 0,
   "network_latency": 0,
-  "raw_samples": 8
+  "raw_samples": 6
 }

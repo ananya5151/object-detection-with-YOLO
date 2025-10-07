@@ -1,11 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // For Docker deployment
   // output: 'standalone', // Not needed for Vercel
   images: { unoptimized: true }, // You may want to remove this if using Vercel Image Optimization
   // eslint: { ignoreDuringBuilds: true },
   // typescript: { ignoreBuildErrors: true },
 
-  // Keep onnxruntime-web in transpilePackages only
   transpilePackages: ['onnxruntime-web'],
 
   experimental: {
@@ -50,7 +50,6 @@ const nextConfig = {
     config.module = config.module || {};
     config.module.rules = config.module.rules || [];
 
-    // Handle different file types
     config.module.rules.push(
       {
         test: /\.wasm$/,
@@ -70,4 +69,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
