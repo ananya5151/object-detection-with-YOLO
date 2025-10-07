@@ -63,6 +63,8 @@ export class WebRTCClientPolling {
                 }
 
                 for (const message of messages) {
+                    console.log(`[Phone] Checking message: type=${message.type}, from=${message.from}, to=${message.to}, myId=${this.clientId}`);
+
                     // Only process messages meant for us or broadcasts
                     if (message.to && message.to !== this.clientId && message.to !== 'phone') {
                         console.log(`[Phone] Skipping message (to: ${message.to}, my clientId: ${this.clientId})`);
