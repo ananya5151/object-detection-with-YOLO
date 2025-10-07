@@ -108,13 +108,23 @@ export class WebRTCManager {
           `/api/signaling?roomId=${this.roomId}&since=${this.lastPollTimestamp}`
         )
 
-        if (!response.ok) { return }
+        if (!response.ok) {
+          console.error('[Viewer] Polling failed:', response.status, response.statusText)
+          return
+        }
 
         const { messages } = await response.json()
 
+        if (messages.length > 0) {
+          console.log(`[Viewer] Received ${messages.length} messages:`, messages.map((m: any) => ({ type: m.type, from: m.from, to: m.to })))
+        }
+
         for (const message of messages) {
           // Only process messages meant for viewers
-          if (message.to && message.to !== 'viewer' && message.to !== this.clientId) { continue }
+          if (message.to && message.to !== 'viewer' && message.to !== this.clientId) {
+            console.log(`[Viewer] Skipping message (to: ${message.to}, clientId: ${this.clientId})`)
+            continue
+          }
 
           if (message.type === 'offer') {
             await this.handleOffer(message.data, message.from)
