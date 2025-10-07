@@ -21,6 +21,12 @@ export class WebRTCManager {
   private frameQueue: ImageData[] = []
   private isProcessingFrame = false
   private preferredInputName = 'inputs'
+  // HTTP polling for signaling (Vercel-compatible)
+  private roomId: string = 'default-room'
+  private clientId: string = 'viewer-' + Math.random().toString(36).substr(2, 9)
+  private pollingInterval: NodeJS.Timeout | null = null
+  private lastPollTimestamp: number = 0
+  private useHttpPolling: boolean = false
   // Queue to hold incoming MediaStreams until WASM is ready
   private videoStreamQueue: MediaStream[] = []
   // Track which classIds we've already logged to avoid noisy output
@@ -82,6 +88,65 @@ export class WebRTCManager {
       window.localStorage.setItem('webrtc_model_config_v1', JSON.stringify(cfg))
     } catch (e) {
       // ignore
+    }
+  }
+
+  private setupHttpPolling() {
+    console.log('[Viewer] Using HTTP polling for signaling (Vercel mode)')
+    this.isConnected = true
+    this.lastPollTimestamp = Date.now()
+
+    // Start polling for offers and ICE candidates
+    this.pollingInterval = setInterval(async () => {
+      try {
+        const response = await fetch(
+          `/api/signaling?roomId=${this.roomId}&since=${this.lastPollTimestamp}`
+        )
+
+        if (!response.ok) { return }
+
+        const { messages } = await response.json()
+
+        for (const message of messages) {
+          // Only process messages meant for viewers
+          if (message.to && message.to !== 'viewer' && message.to !== this.clientId) { continue }
+
+          if (message.type === 'offer') {
+            await this.handleOffer(message.data)
+          } else if (message.type === 'ice-candidate') {
+            await this.handleIceCandidate(message.data)
+          }
+        }
+
+        // Update timestamp for next poll
+        if (messages.length > 0) {
+          this.lastPollTimestamp = Math.max(...messages.map((m: any) => m.timestamp))
+        }
+      } catch (error) {
+        console.error('[Viewer] Polling error:', error)
+      }
+    }, 1000) // Poll every second
+  }
+
+  private async sendSignalingMessage(type: 'offer' | 'answer' | 'ice-candidate', data: any, to: string = 'phone') {
+    try {
+      const response = await fetch('/api/signaling', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          roomId: this.roomId,
+          type,
+          from: this.clientId,
+          to,
+          data,
+        }),
+      })
+
+      if (!response.ok) {
+        console.error('[Viewer] Failed to send signaling message:', response.statusText)
+      }
+    } catch (error) {
+      console.error('[Viewer] Error sending signaling message:', error)
     }
   }
 
@@ -348,8 +413,12 @@ export class WebRTCManager {
     }
 
     this.peerConnection.onicecandidate = (event) => {
-      if (event.candidate && this.socket) {
-        this.socket.emit("ice_candidate", event.candidate)
+      if (event.candidate) {
+        if (this.useHttpPolling) {
+          this.sendSignalingMessage('ice-candidate', event.candidate)
+        } else if (this.socket) {
+          this.socket.emit("ice_candidate", event.candidate)
+        }
       }
     }
 
@@ -390,7 +459,9 @@ export class WebRTCManager {
     const answer = await this.peerConnection.createAnswer()
     await this.peerConnection.setLocalDescription(answer)
 
-    if (this.socket) {
+    if (this.useHttpPolling) {
+      await this.sendSignalingMessage('answer', answer)
+    } else if (this.socket) {
       this.socket.emit("answer", answer)
     }
   }

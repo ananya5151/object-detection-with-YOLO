@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { WebRTCClient } from "@/lib/webrtc-client"
+import { WebRTCClientPolling } from "@/lib/webrtc-client-polling"
 
 interface PhoneCameraProps {
   onConnectionChange: (status: "disconnected" | "connecting" | "connected") => void
@@ -11,7 +11,7 @@ interface PhoneCameraProps {
 
 export function PhoneCamera({ onConnectionChange, onStreamingChange }: PhoneCameraProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const webrtcClientRef = useRef<WebRTCClient | null>(null)
+  const webrtcClientRef = useRef<WebRTCClientPolling | null>(null)
   const [isStreaming, setIsStreaming] = useState(false)
   const [hasPermission, setHasPermission] = useState(false)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
@@ -19,7 +19,7 @@ export function PhoneCamera({ onConnectionChange, onStreamingChange }: PhoneCame
 
   useEffect(() => {
     console.log("[v0] Initializing WebRTC Client for phone")
-    webrtcClientRef.current = new WebRTCClient()
+    webrtcClientRef.current = new WebRTCClientPolling()
 
     webrtcClientRef.current.onConnectionStateChange = (state) => {
       console.log("[v0] Connection state changed:", state)
