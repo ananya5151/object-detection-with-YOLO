@@ -99,7 +99,7 @@ export class WebRTCManager {
     console.log('[Viewer] Using HTTP polling for signaling (Vercel mode)')
     this.useHttpPolling = true
     this.isConnected = true
-    this.lastPollTimestamp = Date.now()
+    this.lastPollTimestamp = 0 // Start from 0 to get all existing messages on first poll
 
     // Start polling for offers and ICE candidates
     this.pollingInterval = setInterval(async () => {
@@ -136,6 +136,9 @@ export class WebRTCManager {
         // Update timestamp for next poll
         if (messages.length > 0) {
           this.lastPollTimestamp = Math.max(...messages.map((m: any) => m.timestamp))
+        } else if (this.lastPollTimestamp === 0) {
+          // If first poll and no messages, set to now to avoid re-polling old empty results
+          this.lastPollTimestamp = Date.now()
         }
       } catch (error) {
         console.error('[Viewer] Polling error:', error)
