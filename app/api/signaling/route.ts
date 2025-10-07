@@ -15,6 +15,8 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        console.log(`[API] Storing ${type} from ${from} to ${to || 'broadcast'} in room ${roomId}`);
+
         await signalingStore.addMessage(roomId, {
             type,
             from,
@@ -47,6 +49,9 @@ export async function GET(request: NextRequest) {
         }
 
         const messages = await signalingStore.getMessages(roomId, since);
+
+        console.log(`[API] GET /api/signaling?roomId=${roomId}&since=${since} -> ${messages.length} messages`,
+            messages.map(m => `${m.type} from ${m.from}`));
 
         return NextResponse.json({ messages });
     } catch (error) {

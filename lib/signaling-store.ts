@@ -107,11 +107,14 @@ class RedisSignalingStore implements ISignalingStore {
     }
 
     async addMessage(roomId: string, message: SignalingMessage): Promise<void> {
+        // If this is a new offer, clear old messages from this sender FIRST
         if (message.type === 'offer') {
             await this.removeBySender(roomId, message.from)
         }
+        // Add the new message
         const member = JSON.stringify(message)
         await this.call(['ZADD', this.key(roomId), message.timestamp, member])
+        // Clean up old messages after adding
         await this.cleanup(roomId)
     }
 
