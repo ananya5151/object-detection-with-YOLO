@@ -54,9 +54,16 @@ export class WebRTCClientPolling {
 
                 const { messages } = await response.json();
 
+                if (messages.length > 0) {
+                    console.log(`[Phone] Received ${messages.length} messages:`, messages.map((m: any) => ({ type: m.type, from: m.from, to: m.to })));
+                }
+
                 for (const message of messages) {
                     // Only process messages meant for us or broadcasts
-                    if (message.to && message.to !== this.clientId) continue;
+                    if (message.to && message.to !== this.clientId) {
+                        console.log(`[Phone] Skipping message (to: ${message.to}, clientId: ${this.clientId})`);
+                        continue;
+                    }
 
                     if (message.type === 'answer') {
                         await this.handleAnswer(message.data);

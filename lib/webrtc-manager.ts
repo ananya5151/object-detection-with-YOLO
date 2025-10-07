@@ -116,7 +116,7 @@ export class WebRTCManager {
           if (message.to && message.to !== 'viewer' && message.to !== this.clientId) { continue }
 
           if (message.type === 'offer') {
-            await this.handleOffer(message.data)
+            await this.handleOffer(message.data, message.from)
           } else if (message.type === 'ice-candidate') {
             await this.handleIceCandidate(message.data)
           }
@@ -433,8 +433,8 @@ export class WebRTCManager {
     }
   }
 
-  private async handleOffer(offer: RTCSessionDescriptionInit) {
-    console.log('[Laptop] Received offer from phone')
+  private async handleOffer(offer: RTCSessionDescriptionInit, phoneClientId?: string) {
+    console.log('[Laptop] Received offer from phone:', phoneClientId)
     // Ensure we have a peerConnection ready to accept the offer
     if (!this.peerConnection) {
 
@@ -466,9 +466,9 @@ export class WebRTCManager {
     const answer = await this.peerConnection.createAnswer()
     await this.peerConnection.setLocalDescription(answer)
 
-    console.log('[Laptop] Sending answer via', this.useHttpPolling ? 'HTTP polling' : 'Socket.IO')
+    console.log('[Laptop] Sending answer via', this.useHttpPolling ? 'HTTP polling' : 'Socket.IO', 'to:', phoneClientId || 'phone')
     if (this.useHttpPolling) {
-      await this.sendSignalingMessage('answer', answer)
+      await this.sendSignalingMessage('answer', answer, phoneClientId || 'phone')
     } else if (this.socket) {
       this.socket.emit("answer", answer)
     }
