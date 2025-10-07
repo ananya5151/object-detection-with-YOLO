@@ -96,6 +96,7 @@ export class WebRTCManager {
 
   private setupHttpPolling() {
     console.log('[Viewer] Using HTTP polling for signaling (Vercel mode)')
+    this.useHttpPolling = true
     this.isConnected = true
     this.lastPollTimestamp = Date.now()
 
@@ -433,6 +434,7 @@ export class WebRTCManager {
   }
 
   private async handleOffer(offer: RTCSessionDescriptionInit) {
+    console.log('[Laptop] Received offer from phone')
     // Ensure we have a peerConnection ready to accept the offer
     if (!this.peerConnection) {
 
@@ -444,7 +446,7 @@ export class WebRTCManager {
       return
     }
 
-
+    console.log('[Laptop] Setting remote description and creating answer')
     await this.peerConnection.setRemoteDescription(offer)
 
     // Drain any ICE candidates that arrived before the remote description was set
@@ -464,6 +466,7 @@ export class WebRTCManager {
     const answer = await this.peerConnection.createAnswer()
     await this.peerConnection.setLocalDescription(answer)
 
+    console.log('[Laptop] Sending answer via', this.useHttpPolling ? 'HTTP polling' : 'Socket.IO')
     if (this.useHttpPolling) {
       await this.sendSignalingMessage('answer', answer)
     } else if (this.socket) {
