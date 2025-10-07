@@ -8,6 +8,7 @@ export class WebRTCClientPolling {
     private clientId: string;
     private pollingInterval: NodeJS.Timeout | null = null;
     private lastPollTimestamp: number = 0;
+    private pendingIceCandidates: RTCIceCandidateInit[] = []; // Queue for ICE candidates received before answer
 
     public onConnectionStateChange: ((state: "disconnected" | "connecting" | "connected") => void) | null = null;
 
@@ -60,10 +61,12 @@ export class WebRTCClientPolling {
 
                 for (const message of messages) {
                     // Only process messages meant for us or broadcasts
-                    if (message.to && message.to !== this.clientId) {
-                        console.log(`[Phone] Skipping message (to: ${message.to}, clientId: ${this.clientId})`);
+                    if (message.to && message.to !== this.clientId && message.to !== 'phone') {
+                        console.log(`[Phone] Skipping message (to: ${message.to}, my clientId: ${this.clientId})`);
                         continue;
                     }
+
+                    console.log(`[Phone] Processing ${message.type} from ${message.from}`);
 
                     if (message.type === 'answer') {
                         await this.handleAnswer(message.data);
@@ -154,6 +157,20 @@ export class WebRTCClientPolling {
                 if (sigState === "have-local-offer" || sigState === "have-local-pranswer") {
                     await this.peerConnection.setRemoteDescription(answer);
                     console.log('[Phone] Answer applied successfully');
+
+                    // Drain any queued ICE candidates now that remote description is set
+                    if (this.pendingIceCandidates.length > 0) {
+                        console.log(`[Phone] Draining ${this.pendingIceCandidates.length} queued ICE candidates`);
+                        for (const candidate of this.pendingIceCandidates) {
+                            try {
+                                await this.peerConnection.addIceCandidate(candidate);
+                            } catch (err) {
+                                console.warn('[Phone] Error adding queued ICE candidate:', err);
+                            }
+                        }
+                        this.pendingIceCandidates = [];
+                    }
+
                     return;
                 }
 
@@ -172,13 +189,23 @@ export class WebRTCClientPolling {
     }
 
     private async handleIceCandidate(candidate: RTCIceCandidateInit) {
-        if (this.peerConnection) {
-            try {
-                await this.peerConnection.addIceCandidate(candidate);
-                console.log('[Phone] ICE candidate added');
-            } catch (err) {
-                console.error('[Phone] Error adding ICE candidate:', err);
-            }
+        if (!this.peerConnection) {
+            console.warn('[Phone] Received ICE candidate but no peer connection');
+            return;
+        }
+
+        // If remote description isn't set yet, queue the candidate
+        if (!this.peerConnection.remoteDescription) {
+            console.log('[Phone] Queueing ICE candidate (remote description not set yet)');
+            this.pendingIceCandidates.push(candidate);
+            return;
+        }
+
+        try {
+            await this.peerConnection.addIceCandidate(candidate);
+            console.log('[Phone] ICE candidate added');
+        } catch (err) {
+            console.error('[Phone] Error adding ICE candidate:', err);
         }
     }
 
