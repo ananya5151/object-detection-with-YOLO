@@ -116,7 +116,9 @@ class RedisSignalingStore implements ISignalingStore {
     }
 
     async getMessages(roomId: string, since: number): Promise<SignalingMessage[]> {
-        const res = await this.call(['ZRANGEBYSCORE', this.key(roomId), since + 1, '+inf'])
+        // Use exclusive lower bound to avoid dropping messages that share the same millisecond timestamp
+        const lowerBound = `(${since}`
+        const res = await this.call(['ZRANGEBYSCORE', this.key(roomId), lowerBound, '+inf'])
         const members: string[] = res?.result || []
         const out: SignalingMessage[] = []
         for (const m of members) {

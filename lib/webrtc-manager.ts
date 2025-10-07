@@ -28,7 +28,7 @@ export class WebRTCManager {
   private pollingInterval: NodeJS.Timeout | null = null
   private lastPollTimestamp: number = 0
   private useHttpPolling: boolean = false
-  private remotePeerClientId: string = 'phone' // Will be updated when we receive an offer
+  private remotePeerClientId: string = '' // Set after pairing on first offer
   // Queue to hold incoming MediaStreams until WASM is ready
   private videoStreamQueue: MediaStream[] = []
   // Track which classIds we've already logged to avoid noisy output
@@ -445,7 +445,11 @@ export class WebRTCManager {
     this.peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
         if (this.useHttpPolling) {
-          this.sendSignalingMessage('ice-candidate', event.candidate, this.remotePeerClientId)
+          if (this.remotePeerClientId) {
+            this.sendSignalingMessage('ice-candidate', event.candidate, this.remotePeerClientId)
+          } else {
+            console.log('[Viewer] ICE candidate generated before pairing; holding until paired')
+          }
         } else if (this.socket) {
           this.socket.emit("ice_candidate", event.candidate)
         }
