@@ -119,17 +119,27 @@ export class WebRTCManager {
           console.log(`[Viewer] Received ${messages.length} messages:`, messages.map((m: any) => ({ type: m.type, from: m.from, to: m.to })))
         }
 
-        for (const message of messages) {
-          // Only process messages meant for viewers
-          if (message.to && message.to !== 'viewer' && message.to !== this.clientId) {
-            console.log(`[Viewer] Skipping message (to: ${message.to}, clientId: ${this.clientId})`)
-            continue
-          }
+        // Filter messages addressed to this viewer
+        const addressed = messages.filter((m: any) => !m.to || m.to === 'viewer' || m.to === this.clientId)
 
-          if (message.type === 'offer') {
-            await this.handleOffer(message.data, message.from)
-          } else if (message.type === 'ice-candidate') {
-            await this.handleIceCandidate(message.data)
+        // 1) Pairing: if not paired yet, pick the most recent offer addressed to the viewer
+        if (!this.remotePeerClientId) {
+          const offers = addressed.filter((m: any) => m.type === 'offer')
+          if (offers.length > 0) {
+            const latest = offers.reduce((a: any, b: any) => (a.timestamp > b.timestamp ? a : b))
+            console.log('[Viewer] Pairing with phone:', latest.from)
+            await this.handleOffer(latest.data, latest.from)
+          }
+        }
+
+        // 2) ICE candidates: only accept from the paired phone
+        for (const m of addressed) {
+          if (m.type === 'ice-candidate') {
+            if (this.remotePeerClientId && m.from === this.remotePeerClientId) {
+              await this.handleIceCandidate(m.data)
+            } else {
+              console.log('[Viewer] Ignoring ICE from non-paired sender:', m.from)
+            }
           }
         }
 
