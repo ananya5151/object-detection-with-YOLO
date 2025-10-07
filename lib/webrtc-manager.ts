@@ -28,6 +28,7 @@ export class WebRTCManager {
   private pollingInterval: NodeJS.Timeout | null = null
   private lastPollTimestamp: number = 0
   private useHttpPolling: boolean = false
+  private remotePeerClientId: string = 'phone' // Will be updated when we receive an offer
   // Queue to hold incoming MediaStreams until WASM is ready
   private videoStreamQueue: MediaStream[] = []
   // Track which classIds we've already logged to avoid noisy output
@@ -421,7 +422,7 @@ export class WebRTCManager {
     this.peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
         if (this.useHttpPolling) {
-          this.sendSignalingMessage('ice-candidate', event.candidate)
+          this.sendSignalingMessage('ice-candidate', event.candidate, this.remotePeerClientId)
         } else if (this.socket) {
           this.socket.emit("ice_candidate", event.candidate)
         }
@@ -435,6 +436,12 @@ export class WebRTCManager {
 
   private async handleOffer(offer: RTCSessionDescriptionInit, phoneClientId?: string) {
     console.log('[Laptop] Received offer from phone:', phoneClientId)
+    
+    // Store the phone's clientId for ICE candidate routing
+    if (phoneClientId) {
+      this.remotePeerClientId = phoneClientId
+    }
+    
     // Ensure we have a peerConnection ready to accept the offer
     if (!this.peerConnection) {
 
@@ -466,9 +473,9 @@ export class WebRTCManager {
     const answer = await this.peerConnection.createAnswer()
     await this.peerConnection.setLocalDescription(answer)
 
-    console.log('[Laptop] Sending answer via', this.useHttpPolling ? 'HTTP polling' : 'Socket.IO', 'to:', phoneClientId || 'phone')
+    console.log('[Laptop] Sending answer via', this.useHttpPolling ? 'HTTP polling' : 'Socket.IO', 'to:', this.remotePeerClientId)
     if (this.useHttpPolling) {
-      await this.sendSignalingMessage('answer', answer, phoneClientId || 'phone')
+      await this.sendSignalingMessage('answer', answer, this.remotePeerClientId)
     } else if (this.socket) {
       this.socket.emit("answer", answer)
     }
