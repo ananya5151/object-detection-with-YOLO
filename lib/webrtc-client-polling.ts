@@ -20,6 +20,7 @@ export class WebRTCClientPolling {
 
     private async sendSignalingMessage(type: 'offer' | 'answer' | 'ice-candidate', data: any) {
         try {
+            console.log(`[Phone] Sending ${type} to viewer`);
             const response = await fetch('/api/signaling', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -34,6 +35,8 @@ export class WebRTCClientPolling {
 
             if (!response.ok) {
                 console.error('[Phone] Failed to send signaling message:', response.statusText);
+            } else {
+                console.log(`[Phone] ${type} sent successfully`);
             }
         } catch (error) {
             console.error('[Phone] Error sending signaling message:', error);
