@@ -57,6 +57,8 @@ export class WebRTCManager {
       if (mode === "wasm") {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.initializeWASMInference()
+        // Setup HTTP polling for WASM mode (Vercel-compatible signaling)
+        this.setupHttpPolling()
       }
       // Expose for debugging from the browser console
       try {
