@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        signalingStore.addMessage(roomId, {
+        await signalingStore.addMessage(roomId, {
             type,
             from,
             to,
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const messages = signalingStore.getMessages(roomId, since);
+        const messages = await signalingStore.getMessages(roomId, since);
 
         return NextResponse.json({ messages });
     } catch (error) {
