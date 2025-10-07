@@ -18,6 +18,15 @@ class SignalingStore {
         if (!this.messages.has(roomId)) {
             this.messages.set(roomId, []);
         }
+
+        // If this is a new offer, clear any old messages from this sender
+        // This prevents stale ICE candidates from previous sessions
+        if (message.type === 'offer') {
+            const messages = this.messages.get(roomId)!;
+            const filtered = messages.filter(m => m.from !== message.from);
+            this.messages.set(roomId, filtered);
+        }
+
         this.messages.get(roomId)!.push(message);
         this.cleanup(roomId);
     }
