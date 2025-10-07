@@ -1,31 +1,52 @@
 # 🚀 Real-time WebRTC Object Detection System
 
-> **Next.js + ONNX + Python WebRTC** - High-performance phone-to-laptop video streaming with dual-mode AI inference
+> **Next.js + ONNX Runtime (WASM)** - High-performance phone-to-laptop video streaming with browser-based AI inference
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
-[![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![ONNX Runtime](https://img.shields.io/badge/ONNX-005CED?logo=onnx&logoColor=white)](https://onnxruntime.ai/)
+[![Vercel](https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com/)
 
-A cutting-edge system that enables **real-time object detection** on live video streams from your phone to laptop using WebRTC technology. Features dual inference modes (WASM + Python server), comprehensive benchmarking, and production-ready Docker deployment.
+A cutting-edge system that enables **real-time object detection** on live video streams from your phone to laptop using WebRTC technology. Features browser-based WASM inference for zero-server-cost deployment on Vercel.
 
 ---
 
-## ⚡ Quick Demo (60 seconds)
+## 🌐 Live Demo
+
+**[View Live Demo →](https://object-detection-with-yolo.vercel.app)**
+
+---
+
+## ⚡ Quick Start (Local Development)
 
 ```bash
-# Clone and start immediately
+# Clone the repository
 git clone https://github.com/ananya5151/object-detection-with-YOLO.git
 cd object-detection-with-YOLO
 
-# One-command startup (auto-detects environment)
-./start.sh
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
 
 # Open laptop: http://localhost:3000
-# Open phone: scan QR code or use same URL/phone
+# Open phone: scan QR code or use same URL on phone
 ```
 
 **What you'll see**: Real-time object detection overlays on your phone's video stream, displayed on your laptop with performance metrics.
+
+---
+
+## 🚀 Deploy to Vercel (Production)
+
+This app is optimized for **zero-config deployment** on Vercel:
+
+1. Push your code to GitHub
+2. Go to [vercel.com](https://vercel.com) and import your repository
+3. Click "Deploy" - that's it! ✨
+
+**Note**: The app runs in WASM-only mode on Vercel (no server required), providing excellent performance entirely in the browser.
 
 ---
 
@@ -51,7 +72,6 @@ cd object-detection-with-YOLO
 ## 🏗️ System Architecture
 
 <img width="691" height="700" alt="image" src="https://github.com/user-attachments/assets/e6928ff7-9eb0-4115-b15d-10fac9a5770a" />
-
 
 ### **Data Flow**
 
@@ -643,7 +663,6 @@ npm run dev
 
 ---
 
-
 ## 🙏 Acknowledgments
 
 - **[Ultralytics](https://ultralytics.com/)** - YOLOv5 models and training framework
@@ -665,4 +684,3 @@ npm run dev
 <div align="center">
 
 **Built with ❤️ for the WebRTC + AI Community**
-

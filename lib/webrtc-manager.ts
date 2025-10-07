@@ -43,7 +43,10 @@ export class WebRTCManager {
     this.mode = mode
     // Only run browser-specific initialization when executing in the browser
     if (typeof window !== 'undefined') {
-      this.setupSocket()
+      // Only setup Socket.IO for server mode (not needed for WASM-only deployment)
+      if (mode === "server") {
+        this.setupSocket()
+      }
       if (mode === "wasm") {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.initializeWASMInference()

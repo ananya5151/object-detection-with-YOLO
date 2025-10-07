@@ -57,22 +57,24 @@ export default function Home() {
           )}
         </div>
 
-        {/* Mode Selection */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Detection Mode</CardTitle>
-            <CardDescription>Choose between server-side inference or client-side WASM processing</CardDescription>
-          </CardHeader>
-          <CardContent className="flex gap-4">
-            <Button variant={mode === "server" ? "default" : "outline"} onClick={() => setMode("server")}>
-              Server Mode (High Performance)
-            </Button>
-            <Button variant={mode === "wasm" ? "default" : "outline"} onClick={() => setMode("wasm")}>
-              WASM Mode (Low Resource)
-            </Button>
-            <Badge variant="secondary">Current: {mode.toUpperCase()}</Badge>
-          </CardContent>
-        </Card>
+        {/* Mode Selection - Hidden on Vercel since Socket.IO not supported */}
+        {process.env.NODE_ENV === 'development' && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Detection Mode</CardTitle>
+              <CardDescription>Choose between server-side inference or client-side WASM processing</CardDescription>
+            </CardHeader>
+            <CardContent className="flex gap-4">
+              <Button variant={mode === "server" ? "default" : "outline"} onClick={() => setMode("server")}>
+                Server Mode (High Performance)
+              </Button>
+              <Button variant={mode === "wasm" ? "default" : "outline"} onClick={() => setMode("wasm")}>
+                WASM Mode (Low Resource)
+              </Button>
+              <Badge variant="secondary">Current: {mode.toUpperCase()}</Badge>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Phone Connection */}
